@@ -115,7 +115,6 @@ void OnMultLine(int m_ar, int m_br)
     free(phc);
 }
 
-// add code here for block x block matriz multiplication
 void OnMultBlock(int m_ar, int m_br, int bkSize)
 {
 	SYSTEMTIME Time1, Time2;
@@ -142,11 +141,10 @@ void OnMultBlock(int m_ar, int m_br, int bkSize)
         for (jj=0; jj<m_ar; jj+=bkSize) {
             for (kk=0; kk<m_ar; kk+=bkSize) {
 
-                for (i=0; i<bkSize; i++) {
-                    for (k=0; k<bkSize; k++) {
-                        for (j=0; j<bkSize; j++) {
-                            phc[(ii+i) * m_ar + (jj+j)] += pha[(ii+i) * m_ar + (kk+k)] *
-                                                           phb[(kk+k) * m_ar + (jj+j)];
+                for (i=ii; i<min(bkSize+ii, m_ar); i++) {
+                    for (k=kk; k<min(bkSize+kk, m_ar); k++) {
+                        for (j=jj; j<min(bkSize+jj, m_ar); j++) {
+                            phc[i * m_ar + j] += pha[i * m_ar + k] * phb[k * m_ar + j];
                         }
                     }
                 }
