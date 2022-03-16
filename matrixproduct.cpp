@@ -75,14 +75,136 @@ void OnMult(int m_ar, int m_br)
 // add code here for line x line matriz multiplication
 void OnMultLine(int m_ar, int m_br)
 {
-    
+	int i, j, k;
+
+	SYSTEMTIME Time1, Time2;
+
+	double temp;
+
+	double *pha, *phb, *phc;
+	
+
+		
+    pha = (double *)malloc((m_ar * m_ar) * sizeof(double));
+	phb = (double *)malloc((m_ar * m_ar) * sizeof(double));
+	phc = (double *)malloc((m_ar * m_ar) * sizeof(double));
+
+	//setup matrixes
+	for(i=0; i<m_ar; i++)
+		for(j=0; j<m_ar; j++)
+			pha[i*m_ar + j] = (double)1.0;
+
+
+
+	for(i=0; i<m_br; i++)
+		for(j=0; j<m_br; j++)
+			phb[i*m_br + j] = (double)(i+1);
+
+	
+	Time1 = clock();
+
+	//calc
+	for(i=0; i<m_ar; i++){	
+		for( k=0; k<m_br; k++){	
+			temp = 0;
+			for( j=0; j<m_ar; j++){	
+				temp += pha[i*m_ar+k] * phb[k*m_br+j];
+			}
+			phc[i*m_ar+j]=temp;
+		}
+	}
+
+	Time2 = clock();
+
+	char st[100];
+	
+	sprintf(st, "Time: %3.3f seconds\n", (double)(Time2 - Time1) / CLOCKS_PER_SEC);
+	cout << st;
+
+	// display 10 elements of the result matrix tto verify correctness
+	cout << "Result matrix: " << endl;
+	for(i=0; i<1; i++)
+	{	for(j=0; j<min(10,m_br); j++)
+			cout << phc[j] << " ";
+	}
+	cout << endl;
+
+    free(pha);
+    free(phb);
+    free(phc);
     
 }
 
 // add code here for block x block matriz multiplication
 void OnMultBlock(int m_ar, int m_br, int bkSize)
 {
+
+	int i, j, k;
+
+	SYSTEMTIME Time1, Time2;
+
+	double temp;
+
+	double *pha, *phb, *phc;
+	
+
+		
+    pha = (double *)malloc((m_ar * m_ar) * sizeof(double));
+	phb = (double *)malloc((m_ar * m_ar) * sizeof(double));
+	phc = (double *)malloc((m_ar * m_ar) * sizeof(double));
+
+	//setup matrixes
+	for(i=0; i<m_ar; i++)
+		for(j=0; j<m_ar; j++)
+			pha[i*m_ar + j] = (double)1.0;
+
+
+
+	for(i=0; i<m_br; i++)
+		for(j=0; j<m_br; j++)
+			phb[i*m_br + j] = (double)(i+1);
+
+
+	Time1 = clock();
+
+
+	for (int jj = 0; jj < m_ar; jj += bkSize)
+	{
+		for (int kk = 0; kk < m_ar; kk += bkSize)
+		{
+			for (int i = 0; i < m_ar; i++)
+			{
+				for (int j = jj; j < ((jj + bkSize) > m_ar ? m_ar : (jj + bkSize)); j++)
+				{
+					temp = 0;
+					for (int k = kk; k < ((kk + bkSize) > m_ar ? m_ar : (kk + bkSize)); k++)
+					{
+						temp += pha[i*m_ar+k] * phb[k*m_br+j];
+					}
+					phc[i*m_ar+j]=temp;
+				}
+			}
+		}
+	}
     
+	Time2 = clock();
+
+	char st[100];
+	
+	sprintf(st, "Time: %3.3f seconds\n", (double)(Time2 - Time1) / CLOCKS_PER_SEC);
+	cout << st;
+
+	// display 10 elements of the result matrix tto verify correctness
+	cout << "Result matrix: " << endl;
+	for(i=0; i<1; i++)
+	{	for(j=0; j<min(10,m_br); j++)
+			cout << phc[j] << " ";
+	}
+	cout << endl;
+
+    free(pha);
+    free(phb);
+    free(phc);
     
 }
 
@@ -102,7 +224,7 @@ void init_papi() {
   }
   if (retval < 0) handle_error(retval);
 
-  std::cout << "PAPI Version Number: MAJOR: " << PAPI_VERSION_MAJOR(retval)
+  cout << "PAPI Version Number: MAJOR: " << PAPI_VERSION_MAJOR(retval)
             << " MINOR: " << PAPI_VERSION_MINOR(retval)
             << " REVISION: " << PAPI_VERSION_REVISION(retval) << "\n";
 }
@@ -122,7 +244,7 @@ int main (int argc, char *argv[])
 
 	ret = PAPI_library_init( PAPI_VER_CURRENT );
 	if ( ret != PAPI_VER_CURRENT )
-		std::cout << "FAIL" << endl;
+		cout << "FAIL" << endl;
 
 
 	ret = PAPI_create_eventset(&EventSet);
@@ -177,7 +299,7 @@ int main (int argc, char *argv[])
 
 		ret = PAPI_reset( EventSet );
 		if ( ret != PAPI_OK )
-			std::cout << "FAIL reset" << endl; 
+			cout << "FAIL reset" << endl; 
 
 
 
@@ -185,14 +307,14 @@ int main (int argc, char *argv[])
 
 	ret = PAPI_remove_event( EventSet, PAPI_L1_DCM );
 	if ( ret != PAPI_OK )
-		std::cout << "FAIL remove event" << endl; 
+		cout << "FAIL remove event" << endl; 
 
 	ret = PAPI_remove_event( EventSet, PAPI_L2_DCM );
 	if ( ret != PAPI_OK )
-		std::cout << "FAIL remove event" << endl; 
+		cout << "FAIL remove event" << endl; 
 
 	ret = PAPI_destroy_eventset( &EventSet );
 	if ( ret != PAPI_OK )
-		std::cout << "FAIL destroy" << endl;
+		cout << "FAIL destroy" << endl;
 
 }
