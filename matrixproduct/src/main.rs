@@ -20,7 +20,7 @@ fn mul_by_cols(m_len: usize) {
     }
 
     let elapsed = start.elapsed();
-    println!("elapsed time [mul_by_cols]: {:.3?}", elapsed);
+    println!("elapsed time [mul_by_cols]: {elapsed:.3?}");
 
     let elem : usize = m_len * (m_len+1)/2;
     assert_eq!(m_c[0][0], elem as f32);
@@ -47,7 +47,7 @@ fn mul_by_line(m_len: usize) {
     }
 
     let elapsed = start.elapsed();
-    println!("elapsed time [mul_by_line]: {:.3?}", elapsed);
+    println!("elapsed time [mul_by_line]: {elapsed:.3?}");
 
     let elem : usize = m_len * (m_len+1)/2;
     assert_eq!(m_c[0][0], elem as f32);
