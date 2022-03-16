@@ -8,10 +8,10 @@ FEUP's CPD first project
 In order to check the execution times in the rust implementation of the
 matrix multiplication algorithm, run the following commands:
 
-1. ```sh
+```sh
 cd matrixproduct
 ```
-2. ```sh
+```sh
 cargo run --release
 ```
 
