@@ -1,9 +1,18 @@
-# CPD-SingleCorePreformance
+# CPD-SingleCorePerformance
 FEUP's CPD first project
 
-## Overheads
-``` sh
-sudo sh -c 'echo -1 >/proc/sys/kernel/perf_event_paranoid'
+## Usage
+
+## Rust implementation
+
+In order to check the execution times in the rust implementation of the
+matrix multiplication algorithm, run the following commands:
+
+```sh
+cd matrixproduct
+```
+```sh
+cargo run --release
 ```
 
 ## Contributors
