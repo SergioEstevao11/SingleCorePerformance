@@ -106,11 +106,9 @@ void OnMultLine(int m_ar, int m_br)
 	//calc
 	for(i=0; i<m_ar; i++){	
 		for( k=0; k<m_br; k++){	
-			temp = 0;
 			for( j=0; j<m_ar; j++){	
-				temp += pha[i*m_ar+k] * phb[k*m_br+j];
+				phc[i*m_ar+j] += pha[i*m_ar+k] * phb[k*m_br+j];
 			}
-			phc[i*m_ar+j]=temp;
 		}
 	}
 
@@ -166,26 +164,44 @@ void OnMultBlock(int m_ar, int m_br, int bkSize)
 
 
 	Time1 = clock();
-
-
-	for (int jj = 0; jj < m_ar; jj += bkSize)
+	for(int jj = 0; jj < m_ar; jj+= bkSize)
 	{
-		for (int kk = 0; kk < m_ar; kk += bkSize)
+		for(int kk = 0; kk < m_ar; kk+= bkSize)
 		{
-			for (int i = 0; i < m_ar; i++)
-			{
-				for (int j = jj; j < ((jj + bkSize) > m_ar ? m_ar : (jj + bkSize)); j++)
-				{
-					temp = 0;
-					for (int k = kk; k < ((kk + bkSize) > m_ar ? m_ar : (kk + bkSize)); k++)
-					{
-						temp += pha[i*m_ar+k] * phb[k*m_br+j];
+			for(i=0; i<m_ar; i++)
+			{	
+				for( j=jj; j < ((jj + bkSize) > m_ar ? m_ar : (jj + bkSize)); j++)
+				{	
+					temp = 0.0f;
+					for( k=kk; k < ((kk + bkSize) > m_ar ? m_ar : (kk + bkSize)); k++)
+					{	
+						temp += pha[i*m_ar+k] * phb[k*m_ar+j];
 					}
-					phc[i*m_ar+j]=temp;
+					phc[i*m_ar+j]+=temp;
 				}
 			}
 		}
 	}
+
+
+	// for (int jj = 0; jj < m_ar; jj += bkSize)
+	// {
+	// 	for (int kk = 0; kk < m_ar; kk += bkSize)
+	// 	{
+	// 		for (int i = 0; i < m_ar; i++)
+	// 		{
+	// 			for (int j = jj; j < ((jj + bkSize) > m_ar ? m_ar : (jj + bkSize)); j++)
+	// 			{
+	// 				temp = 0;
+	// 				for (int k = kk; k < ((kk + bkSize) > m_ar ? m_ar : (kk + bkSize)); k++)
+	// 				{
+	// 					temp += pha[i*m_ar+k] * phb[k*m_br+j];
+	// 				}
+	// 				phc[i*m_ar+j]=temp;
+	// 			}
+	// 		}
+	// 	}
+	// }
     
 	Time2 = clock();
 
@@ -196,7 +212,7 @@ void OnMultBlock(int m_ar, int m_br, int bkSize)
 
 	// display 10 elements of the result matrix tto verify correctness
 	cout << "Result matrix: " << endl;
-	for(i=0; i<1; i++)
+	for(i=0; i<5; i++)
 	{	for(j=0; j<min(10,m_br); j++)
 			cout << phc[j] << " ";
 	}
