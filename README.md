@@ -1,4 +1,4 @@
-# CPD-SingleCorePreformance
+# CPD-SingleCorePerformance
 FEUP's CPD first project
 
 ## Usage
