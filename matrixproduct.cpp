@@ -5,6 +5,8 @@
 #include <cstdlib>
 #include <papi.h>
 #include <omp.h>
+#include <time.h>       /* time_t, struct tm, difftime, time, mktime */
+
 
 using namespace std;
 
@@ -35,7 +37,11 @@ void OnMult(int m_ar, int m_br)
 			phb[i*m_br + j] = (double)(i+1);
 
 
-    Time1 = clock();
+    //Time1 = clock();
+	time_t timer, timerEnd;
+
+	time(&timer);
+
 
 	#pragma omp parallel private(j, k)
 	for(i=0; i<m_ar; i++) {
@@ -54,10 +60,12 @@ void OnMult(int m_ar, int m_br)
 		}
 	}
 
+    //Time2 = clock();
+	//sprintf(st, "Time: %3.3f seconds\n", (double)(Time2 - Time1) / CLOCKS_PER_SEC);
+	//cout << st;
 
-    Time2 = clock();
-	sprintf(st, "Time: %3.3f seconds\n", (double)(Time2 - Time1) / CLOCKS_PER_SEC);
-	cout << st;
+	time(&timerEnd);
+	cout << "Time: " << difftime(timerEnd,timer) << " seconds." << endl;
 
 	// display 10 elements of the result matrix tto verify correctness
 	cout << "Result matrix: " << endl;
@@ -94,9 +102,12 @@ void OnMultLine(int m_ar, int m_br)
 			phb[i*m_br + j] = (double)(i+1);
 
 	
-	Time1 = clock();
+	//Time1 = clock();
+	time_t timer, timerEnd;
 
-	#pragma omp parallel for private(i, j)
+	time(&timer);
+
+	#pragma omp parallel private(j, k)
 	for(i=0; i<m_ar; i++) {
 		for(k=0; k<m_br; k++) {
 
@@ -107,12 +118,15 @@ void OnMultLine(int m_ar, int m_br)
 		}
 	}
 
-	Time2 = clock();
+	// Time2 = clock();
 
-	char st[100];
+	// char st[100];
 	
-	sprintf(st, "Time: %3.3f seconds\n", (double)(Time2 - Time1) / CLOCKS_PER_SEC);
-	cout << st;
+	// sprintf(st, "Time: %3.3f seconds\n", (double)(Time2 - Time1) / CLOCKS_PER_SEC);
+	// cout << st;
+
+	time(&timerEnd);
+	cout << "Time: " << difftime(timerEnd,timer) << " seconds." << endl;
 
 	// display 10 elements of the result matrix tto verify correctness
 	cout << "Result matrix: " << endl;
@@ -149,6 +163,7 @@ void OnMultBlock(int m_ar, int m_br, int bkSize)
 
 	Time1 = clock();
 
+	#pragma 
     for(ii=0; ii<m_ar; ii+=bkSize) {
         for (jj=0; jj<m_ar; jj+=bkSize) {
             for (kk=0; kk<m_ar; kk+=bkSize) {
