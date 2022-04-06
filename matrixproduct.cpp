@@ -4,6 +4,7 @@
 #include <time.h>
 #include <cstdlib>
 #include <papi.h>
+#include <omp.h>
 
 using namespace std;
 
@@ -24,6 +25,7 @@ void OnMult(int m_ar, int m_br)
 	phb = (double *)malloc((m_ar * m_ar) * sizeof(double));
 	phc = (double *)malloc((m_ar * m_ar) * sizeof(double));
 
+
 	for(i=0; i<m_ar; i++)
 		for(j=0; j<m_ar; j++)
 			pha[i*m_ar + j] = (double)1.0;
@@ -35,12 +37,19 @@ void OnMult(int m_ar, int m_br)
 
     Time1 = clock();
 
+	#pragma omp parallel private(j, k)
 	for(i=0; i<m_ar; i++) {
         for(j=0; j<m_br; j++) {
+
+			#pragma omp single
             temp = 0;
+
+			#pragma omp for reduction(+:temp)
 			for(k=0; k<m_ar; k++) {
 				temp += pha[i*m_ar+k] * phb[k*m_br+j];
 			}
+
+			#pragma omp single
 			phc[i*m_ar+j]=temp;
 		}
 	}
@@ -87,8 +96,11 @@ void OnMultLine(int m_ar, int m_br)
 	
 	Time1 = clock();
 
+	#pragma omp parallel for private(i, j)
 	for(i=0; i<m_ar; i++) {
 		for(k=0; k<m_br; k++) {
+
+			#pragma omp for
 			for(j=0; j<m_ar; j++) {
 				phc[i*m_ar+j] += pha[i*m_ar+k] * phb[k*m_br+j];
 			}

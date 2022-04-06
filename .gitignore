@@ -2,3 +2,4 @@
 matrixproduct/target/
 matrixproduct/debug/
 matrixproduct/Cargo.lock
+./mp
